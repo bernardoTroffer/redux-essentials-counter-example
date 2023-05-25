@@ -1,23 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
+import {Counter} from "../../Counter";
 
 export const counterSlice = createSlice({
   name: 'counter',
   initialState: {
     value: 0,
+    counter: new Counter()
   },
   reducers: {
     increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1
+      const newCounter = Counter.createWith(state.counter)
+      newCounter.increment()
+      state.counter = newCounter
     },
     decrement: (state) => {
-      state.value -= 1
+      const newCounter = Counter.createWith(state.counter)
+      newCounter.decrement()
+      state.counter = newCounter
     },
     incrementByAmount: (state, action) => {
-      state.value += action.payload
+      const newCounter = Counter.createWith(state.counter)
+      newCounter.incrementByAmount(action.payload)
+      state.counter = newCounter
     },
   },
 })
@@ -37,6 +41,6 @@ export const incrementAsync = (amount) => (dispatch) => {
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectCount = (state) => state.counter.value
-
+//export const selectCount = (state) => state.counter.value
+export const selectCount = (state) => state.counter.counter.getCount()
 export default counterSlice.reducer
